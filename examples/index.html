@@ -15,6 +15,7 @@
       }
     </style>
   </head>
+
   <body>
     <script type="module">
       import * as THREE from '../build/three.module.js'
@@ -42,8 +43,14 @@
       var specularColor = new THREE.Color()
 
       init()
-      render()
+      animate()
       setKeyEvents()
+
+      function animate() {
+        requestAnimationFrame(animate)
+
+        render()
+      }
 
       function init() {
         var container = document.createElement('div')
@@ -59,13 +66,8 @@
           1,
           80000
         )
-        camera.position.set(-600, 550, 1300)
-        camera.lookAt({
-          //相机看向哪个坐标
-          x: 0,
-          y: 0,
-          z: 0
-        })
+        camera.position.set(0, 0, 1300)
+
         // LIGHTS
         ambientLight = new THREE.AmbientLight(0x333333) // 0.2
 
@@ -112,6 +114,29 @@
 
         // GUI
         setupGui()
+
+        if (mesh !== undefined) {
+          mesh.geometry.dispose()
+          scene.remove(mesh)
+        }
+        var geometry1 = new THREE.BoxBufferGeometry(200, 200, 200)
+        for (var i = 0; i < 20; i++) {
+          var object = new THREE.Mesh(geometry1, texturedMaterial)
+
+          object.position.x = Math.random() * 1600 - 800
+          object.position.y = Math.random() * 1600 - 800
+          object.position.z = Math.random() * 800 - 1000
+
+          object.rotation.x = Math.random() * 2 * Math.PI
+          object.rotation.y = Math.random() * 2 * Math.PI
+          object.rotation.z = Math.random() * 2 * Math.PI
+
+          object.scale.x = Math.random() + 0.5
+          object.scale.y = Math.random() + 0.5
+          object.scale.z = Math.random() + 0.5
+
+          scene.add(object)
+        }
       }
 
       // EVENT HANDLERS
@@ -155,15 +180,6 @@
           nonblinn: false,
           newShading: 'textured'
         }
-
-        var h
-
-        var gui = new GUI()
-
-        gui
-          .add(effectController, 'newShading', ['smooth', 'textured'])
-          .name('Shading')
-          .onChange(render)
       }
 
       function render() {
@@ -224,16 +240,12 @@
           mesh.geometry.dispose()
           scene.remove(mesh)
         }
-        console.log('createcube')
         var geometry = new THREE.BoxBufferGeometry(400, 400, 400)
 
         mesh = new THREE.Mesh(
           geometry,
-          shading === 'smooth'
-            ? gouraudMaterial
-            : shading === 'textured'
-            ? texturedMaterial
-            : reflectiveMaterial
+
+          texturedMaterial
         )
         scene.add(mesh)
       }
@@ -243,20 +255,18 @@
         window.addEventListener('keydown', function(e) {
           console.log(e)
           if (e.key == 'ArrowLeft') {
-            camera.position.x = camera.position.x + 20
+            camera.position.x += 20
             renderer.render(scene, camera) // 渲染
           } else if (e.key == 'ArrowUp') {
-            camera.position.y = camera.position.y - 20
+            camera.position.y -= 20
             renderer.render(scene, camera)
           } else if (e.key == 'ArrowRight') {
-            camera.position.x = camera.position.x - 20
+            camera.position.x -= 20
             renderer.render(scene, camera)
           } else if (e.key == 'ArrowDown') {
-            camera.position.y = camera.position.y + 20
+            camera.position.y += 20
             renderer.render(scene, camera)
           }
-          console.log(mesh.position)
-          console.log(camera.position)
         })
       }
     </script>
