@@ -86,7 +86,7 @@
         cameraControls.addEventListener('change', render)
 
         // TEXTURE
-        var texture = new THREE.TextureLoader().load('textures/tri_pattern.jpg')
+        var texture = new THREE.TextureLoader().load('textures/my-pic.png')
 
         // MATERIALS
         var materialColor = new THREE.Color()
@@ -153,7 +153,7 @@
           body: true,
           fitLid: false,
           nonblinn: false,
-          newShading: 'smooth'
+          newShading: 'textured'
         }
 
         var h
