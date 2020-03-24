@@ -35,9 +35,7 @@
       var shading
       var gouraudMaterial, texturedMaterial, reflectiveMaterial
 
-      var cube, textureCube
-
-      var mesh
+      var mesh, textureCube
 
       // allocate these just once
       var diffuseColor = new THREE.Color()
@@ -45,6 +43,7 @@
 
       init()
       render()
+      setKeyEvents()
 
       function init() {
         var container = document.createElement('div')
@@ -61,7 +60,12 @@
           80000
         )
         camera.position.set(-600, 550, 1300)
-
+        camera.lookAt({
+          //相机看向哪个坐标
+          x: 0,
+          y: 0,
+          z: 0
+        })
         // LIGHTS
         ambientLight = new THREE.AmbientLight(0x333333) // 0.2
 
@@ -216,14 +220,14 @@
       }
 
       function createCube() {
-        if (cube !== undefined) {
-          cube.geometry.dispose()
-          scene.remove(cube)
+        if (mesh !== undefined) {
+          mesh.geometry.dispose()
+          scene.remove(mesh)
         }
+        console.log('createcube')
+        var geometry = new THREE.BoxBufferGeometry(400, 400, 400)
 
-        var geometry = new THREE.BoxBufferGeometry(600, 600, 600)
-
-        cube = new THREE.Mesh(
+        mesh = new THREE.Mesh(
           geometry,
           shading === 'smooth'
             ? gouraudMaterial
@@ -231,8 +235,29 @@
             ? texturedMaterial
             : reflectiveMaterial
         )
+        scene.add(mesh)
+      }
 
-        scene.add(cube)
+      //定义键盘按键事件
+      function setKeyEvents() {
+        window.addEventListener('keydown', function(e) {
+          console.log(e)
+          if (e.key == 'ArrowLeft') {
+            camera.position.x = camera.position.x + 20
+            renderer.render(scene, camera) // 渲染
+          } else if (e.key == 'ArrowUp') {
+            camera.position.y = camera.position.y - 20
+            renderer.render(scene, camera)
+          } else if (e.key == 'ArrowRight') {
+            camera.position.x = camera.position.x - 20
+            renderer.render(scene, camera)
+          } else if (e.key == 'ArrowDown') {
+            camera.position.y = camera.position.y + 20
+            renderer.render(scene, camera)
+          }
+          console.log(mesh.position)
+          console.log(camera.position)
+        })
       }
     </script>
   </body>
